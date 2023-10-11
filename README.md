@@ -2,4 +2,4 @@
 
 Taylor Noh - taylornoh@csu.fullerton.edu  
 Kevin Del - kevindel@csu.fullerton.edu  
-Gregory Martinez - 
+Gregory Martinez - greg_2000@csu.fullerton.edu
