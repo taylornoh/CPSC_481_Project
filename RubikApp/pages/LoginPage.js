@@ -19,7 +19,6 @@ export default Login = ({navigation}) => {
   const [createNewUserScreen, setCreateNewUserScreen] = React.useState(false);
   const [newUser, setNewUser] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
-  const [errorType, setErrorType] = React.useState('');
 
   const context = React.useContext(AppContext);
 
@@ -46,8 +45,6 @@ export default Login = ({navigation}) => {
         {user: newUser, password: newPassword},
       ]);
       setCreateNewUserScreen(false);
-    } else {
-      createAlertPopUp(errorType);
     }
     setNewPassword('');
     setNewUser('');
@@ -56,13 +53,13 @@ export default Login = ({navigation}) => {
   const checkCreateUserPossible = () => {
     //Check for previous User with same credential
     if(checkUserCredentials(newUser, newPassword)){
-      setErrorType('User Already Exists!');
+      createAlertPopUp('User Already Exists!')
       return false;
     }
 
     //Check that all data fields are filled
     if (newUser === '' || newPassword === '') {
-      setErrorType('Please Fill Out All Fields!');
+      createAlertPopUp('Please Fill Out All Fields!');
       return false;
     }
 
@@ -73,7 +70,6 @@ export default Login = ({navigation}) => {
   const login = () =>{
     if(checkUserCredentials(loginUser, loginPassword)){
       context.setCurUser(loginUser)
-      console.log(true);
       return true
     }
     else{
@@ -84,8 +80,6 @@ export default Login = ({navigation}) => {
 
 
   const checkUserCredentials = (userAttempt, passwordAttempt) =>{
-    console.log(userAttempt)
-    console.log(passwordAttempt)
     for (i = 0; i < context.users.length; i++) {
       if (
         context.users[i].user === userAttempt &&
