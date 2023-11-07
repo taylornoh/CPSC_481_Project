@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
-export default PastAttempt = () => {
+export default StatsLocal = () => {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>

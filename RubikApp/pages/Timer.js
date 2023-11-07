@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
-export default Timer = () => {
+export default PastAttempt = () => {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
