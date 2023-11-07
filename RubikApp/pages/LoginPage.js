@@ -13,7 +13,7 @@ import LoginStyle from '../styles/LoginStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppContext from '../AppContext';
 
-export default Login = () => {
+export default Login = ({navigation}) => {
   const [loginUser, setLoginUser] = React.useState('');
   const [loginPassword, setLoginPassword] = React.useState('');
   const [createNewUserScreen, setCreateNewUserScreen] = React.useState(false);
@@ -69,6 +69,20 @@ export default Login = () => {
     return true;
   };
 
+
+  const login = () =>{
+    if(checkUserCredentials(loginUser, loginPassword)){
+      context.setCurUser(loginUser)
+      console.log(true);
+      return true
+    }
+    else{
+      createAlertPopUp("Invalid Login Credentials")
+      return false
+    }
+  }
+
+
   const checkUserCredentials = (userAttempt, passwordAttempt) =>{
     console.log(userAttempt)
     console.log(passwordAttempt)
@@ -100,7 +114,7 @@ export default Login = () => {
       />
       <StatusBar style="auto" />
       <View>
-        <Button style={LoginStyle.button} title="Submit" />
+        <Button style={LoginStyle.button} title="Submit" onPress={() => {login() ?  navigation.navigate("Menu") : null}}/>
         <View style={LoginStyle.verticalSpace} />
         <Button
           style={LoginStyle.button}
