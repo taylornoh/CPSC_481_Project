@@ -30,8 +30,8 @@ export default Login = () => {
       }
     } catch (error) {}
   };
-  const createAlertPopUp = () =>
-    Alert.alert('User Create Error', `${errorType}`, [
+  const createAlertPopUp = (alertType) =>
+    Alert.alert('User Create Error', alertType, [
       {
         text: 'OK',
         onPress: () => console.log('Cancel Pressed'),
@@ -47,7 +47,7 @@ export default Login = () => {
       ]);
       setCreateNewUserScreen(false);
     } else {
-      createAlertPopUp();
+      createAlertPopUp(errorType);
     }
     setNewPassword('');
     setNewUser('');
@@ -55,14 +55,9 @@ export default Login = () => {
 
   const checkCreateUserPossible = () => {
     //Check for previous User with same credential
-    for (i = 0; i < context.users.length; i++) {
-      if (
-        context.users[i].user === newUser &&
-        context.users[i].password === newPassword
-      ) {
-        setErrorType('User Already Exists!');
-        return false;
-      }
+    if(checkUserCredentials(newUser, newPassword)){
+      setErrorType('User Already Exists!');
+      return false;
     }
 
     //Check that all data fields are filled
@@ -73,6 +68,20 @@ export default Login = () => {
 
     return true;
   };
+
+  const checkUserCredentials = (userAttempt, passwordAttempt) =>{
+    console.log(userAttempt)
+    console.log(passwordAttempt)
+    for (i = 0; i < context.users.length; i++) {
+      if (
+        context.users[i].user === userAttempt &&
+        context.users[i].password === passwordAttempt
+      ) {
+        return true
+      }
+    }
+    return false
+  }
 
   return (
     <View style={styles.container}>

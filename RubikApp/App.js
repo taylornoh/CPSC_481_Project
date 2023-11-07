@@ -38,6 +38,7 @@ export default App = () => {
     users,
     setUsers,
     curUser,
+    setCurUser,
     leaderBoard,
     setLeaderboard
   };
