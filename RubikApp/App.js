@@ -17,6 +17,7 @@ export default App = () => {
   const [users, setUsers] = React.useState([]);
   const [curUser, setCurUser] = React.useState();
   const [leaderBoard, setLeaderboard] = React.useState([]);
+  const [firstLoad, setFirstLoad] = React.useState(true);
 
   const userStorageKey = '@Users';
 
@@ -33,6 +34,15 @@ export default App = () => {
     }
   };
 
+  const saveUsers = async () => {
+    try {
+      if (users !== null) {
+        await AsyncStorage.setItem(userStorageKey, JSON.stringify(users));  
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const contextValue = {
     users,
@@ -40,12 +50,21 @@ export default App = () => {
     curUser,
     setCurUser,
     leaderBoard,
-    setLeaderboard
+    setLeaderboard,
   };
 
   React.useEffect(() => {
-    console.log(users)
+    if (!firstLoad) {
+      saveUsers();
+    } else {
+      setFirstLoad(false);
+    }
   }, [users]);
+
+
+  React.useEffect(() => {
+    loadUsers()
+  }, [])
 
   return (
     <AppContext.Provider value={contextValue}>

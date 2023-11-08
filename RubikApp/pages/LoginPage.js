@@ -70,12 +70,18 @@ export default Login = ({navigation}) => {
   const login = () =>{
     if(checkUserCredentials(loginUser, loginPassword)){
       context.setCurUser(loginUser)
+      setLoginPassword('');
+      setLoginUser('');
       return true
     }
     else{
+      setLoginPassword('');
+      setLoginUser('');
       createAlertPopUp("Invalid Login Credentials")
       return false
     }
+
+
   }
 
 
