@@ -28,20 +28,46 @@ export default Timer = () => {
 
   const context = React.useContext(AppContext);
 
-  /*
-  const saveTime = () =>{
-
-    let tempboard = [...context.leaderBoard]
-    let time = minute + "." + second + "." + Math.round(counter);
-
-    for(times = 0; times < tempboard.length; times++){
-      let splitValues = tempboard[times].split(".");
-      if()
+  
+  const saveTime = () => {
+    let tempboard = [...context.leaderBoard];
+    let time = [minute, second, Math.round(counter)];
+    const timeFormat = minute + "." + second + "." + Math.round(counter);
+  
+    if (tempboard.length === 0) {
+      context.setLeaderboard([{ user: context.curUser, finalTime: timeFormat }]);
+      return;
     }
+  
+    let insertIndex = tempboard.length;
+  
+    for (let times = 0; times < tempboard.length; times++) {
+      let splitValues = tempboard[times].finalTime.split(".");
+      let greaterValue = false;
+  
+      for (let i = 0; i < splitValues.length; i++) {
+        if (time[i] < splitValues[i]) {
+          greaterValue = true;
+          break;
+        } else if (time[i] > splitValues[i]) {
+          break;
+        }
+      }
+  
+      if (greaterValue) {
+        insertIndex = times;
+        break;
+      }
+    }
+  
+    context.setLeaderboard([
+      ...tempboard.slice(0, insertIndex),
+      { user: context.curUser, finalTime: timeFormat },
+      ...tempboard.slice(insertIndex),
+    ]);
+  };
+  
 
-    context.setLeaderboard([...context.leaderBoard])
-  }
-*/
   return (
     <View style={styles.container}>
       <View>
@@ -62,6 +88,7 @@ export default Timer = () => {
         <Button
           title="Save"
           disabled={(minute === 0 && counter === 0 && second === 0) ? true : false}
+          onPress={() =>{saveTime()}}
         />
         <Button
           title="Reset"
