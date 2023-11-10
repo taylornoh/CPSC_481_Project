@@ -66,12 +66,18 @@ export default Timer = () => {
       ...tempboard.slice(insertIndex),
     ]);
   };
+
+  const restTimer = ()=>{
+    setCounter(0);
+    setSecond(0);
+    setMinute(0);
+  }
   
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text>
+      <View style= {{width:"80%", alignItems:"center", justifyContent: 'center', flex: 1}}>
+        <Text style={{fontSize:40}}>
           {' '}
           {minute < 10 ? '0' : null}
           {minute} : {second < 10 ? '0' : null}
@@ -79,7 +85,7 @@ export default Timer = () => {
           {Math.round(counter)}
         </Text>
       </View>
-      <View>
+      <View style={{flex: 1, justifyContent:'space-around'}}>
         <Button
           title={!start ? 'Start' : 'Stop'}
           onPress={() => setStart(!start)}
@@ -87,15 +93,16 @@ export default Timer = () => {
 
         <Button
           title="Save"
-          disabled={(minute === 0 && counter === 0 && second === 0) ? true : false}
-          onPress={() =>{saveTime()}}
+          disabled={((minute === 0 && counter === 0 && second === 0) || start) ? true : false}
+          onPress={() =>{saveTime();
+            restTimer();
+          }}
         />
         <Button
           title="Reset"
-          disabled={(minute === 0 && counter === 0 && second === 0) ? true : false}
+          disabled={((minute === 0 && counter === 0 && second === 0) || start) ? true : false}
           onPress={() => {
-            setCounter(0);
-            setSecond(0);
+            restTimer();
           }}
         />
         <StatusBar style="auto" />
