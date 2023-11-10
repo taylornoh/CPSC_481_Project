@@ -7,10 +7,10 @@ import AppContext from './AppContext';
 
 import RubikSolver from './pages/RubikSolver';
 import Menu from './pages/Menu';
-import PastAttempts from './pages/StatsLocal';
 import Timer from './pages/Timer';
 import LoginPage from './pages/LoginPage';
 import StatsGlobal from './pages/StatsGlobal';
+import StatsLocal from './pages/StatsLocal';
 
 export default App = () => {
   const Stack = createNativeStackNavigator();
@@ -116,6 +116,8 @@ export default App = () => {
           <Stack.Screen name="Timer" component={Timer} />
 
           <Stack.Screen name="StatsGlobal" component={StatsGlobal} />
+
+          <Stack.Screen name="StatsLocal" component={StatsLocal} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppContext.Provider>

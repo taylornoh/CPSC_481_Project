@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
-
+import AppContext from '../AppContext';
+import * as React from "react"
 export default Menu = ({navigation}) => {
+
+  const context = React.useContext(AppContext);
   return (
     <View style={styles.container}>
       <View style= {{flex: 1, justifyContent:"center"}}>
@@ -10,8 +13,8 @@ export default Menu = ({navigation}) => {
       <View style={{flex: 1, justifyContent: 'space-evenly'}}>
       <Button title='Solve Cube' onPress={() => navigation.navigate("RubikSolver")}/>
       <Button title='Timer'onPress={() => navigation.navigate("Timer")}/>
-      <Button title='LeaderBoard'onPress={() => navigation.navigate("PastAttempts")}/>
-      <Button title='User Stats'/>
+      <Button title='LeaderBoard'onPress={() => navigation.navigate("StatsGlobal")}/>
+      <Button title='User Stats' onPress={ () => navigation.navigate("StatsLocal")}/>
       </View>
     </View>
   );
