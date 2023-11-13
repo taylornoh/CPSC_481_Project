@@ -1,9 +1,36 @@
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, FlatList } from 'react-native';
+import AppContext from '../AppContext';
+import * as React from 'react';
+export default StatsGlobal = () => {
 
-export default PastAttempt = () => {
+  const context = React.useContext(AppContext);
+
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <View style= {{width: "80%"}}>
+        <FlatList
+          data={context.leaderBoard}
+          renderItem={({item}) => {
+            return(
+              <View style={{flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderColor: 'grey',
+                borderWidth: 1,
+                marginVertical: 10,
+                padding: 10}}>
+              <Text>{item.user}</Text>
+              <Text>{item.finalTime}</Text>
+            </View>
+            )
+          }}
+          keyExtractor={item => item.id}
+        />
+
+      </View>
+
       <StatusBar style="auto" />
     </View>
   );

@@ -7,9 +7,11 @@ import AppContext from './AppContext';
 
 import RubikSolver from './pages/RubikSolver';
 import Menu from './pages/Menu';
-import PastAttempts from './pages/StatsLocal';
 import Timer from './pages/Timer';
 import LoginPage from './pages/LoginPage';
+import StatsGlobal from './pages/StatsGlobal';
+import StatsLocal from './pages/StatsLocal';
+import About from './pages/About';
 
 export default App = () => {
   const Stack = createNativeStackNavigator();
@@ -20,6 +22,7 @@ export default App = () => {
   const [firstLoad, setFirstLoad] = React.useState(true);
 
   const userStorageKey = '@Users';
+  const leaderBoardKey = "@Leaderboard"
 
   const loadUsers = async () => {
     try {
@@ -44,6 +47,31 @@ export default App = () => {
     }
   };
 
+
+  const saveLeaderboard = async () =>{
+    try{
+      if(leaderBoard !== null){
+        await AsyncStorage.setItem(leaderBoardKey, JSON.stringify(leaderBoard))
+      }
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  const loadLeaderboard = async () => {
+    try {
+      const value = await AsyncStorage.getItem(leaderBoardKey);
+
+      if (value !== null) {
+        const parseValue = JSON.parse(value);
+        setLeaderboard(parseValue);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const contextValue = {
     users,
     setUsers,
@@ -63,8 +91,18 @@ export default App = () => {
 
 
   React.useEffect(() => {
-    loadUsers()
+    loadUsers();
+    loadLeaderboard();
   }, [])
+
+
+  React.useEffect (() =>{
+    if(!firstLoad){
+      saveLeaderboard()
+    }else{
+      setFirstLoad(false);
+    }
+  }, [leaderBoard])
 
   return (
     <AppContext.Provider value={contextValue}>
@@ -78,7 +116,12 @@ export default App = () => {
 
           <Stack.Screen name="Timer" component={Timer} />
 
-          <Stack.Screen name="PastAttempts" component={PastAttempts} />
+          <Stack.Screen name="StatsGlobal" component={StatsGlobal} />
+
+          <Stack.Screen name="StatsLocal" component={StatsLocal} />
+
+          <Stack.Screen name = "AboutPage" component={About} />
+          
         </Stack.Navigator>
       </NavigationContainer>
     </AppContext.Provider>
