@@ -11,6 +11,7 @@ import Timer from './pages/Timer';
 import LoginPage from './pages/LoginPage';
 import StatsGlobal from './pages/StatsGlobal';
 import StatsLocal from './pages/StatsLocal';
+import About from './pages/About';
 
 export default App = () => {
   const Stack = createNativeStackNavigator();
@@ -118,6 +119,9 @@ export default App = () => {
           <Stack.Screen name="StatsGlobal" component={StatsGlobal} />
 
           <Stack.Screen name="StatsLocal" component={StatsLocal} />
+
+          <Stack.Screen name = "AboutPage" component={About} />
+          
         </Stack.Navigator>
       </NavigationContainer>
     </AppContext.Provider>
