@@ -13,7 +13,7 @@ export default Timer = () => {
       //Issue: Timer is slow due to SetTimeout has a min delay of 4 milliseconds
       //Band-aid solution : set counter value to increased number
 
-      if (counter < 99) {
+      if (counter < 98) {
         setTimeout(() => setCounter(counter + 1.66666666666), 1);
       } else if (second < 59) {
         setCounter(0);
