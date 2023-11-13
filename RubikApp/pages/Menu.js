@@ -15,6 +15,7 @@ export default Menu = ({navigation}) => {
       <Button title='Timer'onPress={() => navigation.navigate("Timer")}/>
       <Button title='LeaderBoard'onPress={() => navigation.navigate("StatsGlobal")}/>
       <Button title='User Stats' onPress={ () => navigation.navigate("StatsLocal")}/>
+      <Button title='About' onPress={() => navigation.navigate("AboutPage")}/>
       </View>
     </View>
   );
