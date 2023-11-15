@@ -1,35 +1,63 @@
-import { StyleSheet, Text, View, StatusBar, Image, Button } from 'react-native';
+import React, { Component } from "react";
+import { Button, SafeAreaView, StyleSheet, Alert, Text } from "react-native";
+
+//Importing the installed libraries
+import * as FS from "expo-file-system";
 import ImageCropPicker from 'react-native-image-crop-picker';
-import * as React from 'react';
-export default PastAttempt = () => {
+
+export default function RubikSolver() {
 
   const [saveImage, setSaveImage] = React.useState('');
 
-  const takeImage = () =>{
-    ImageCropPicker.openCamera({
+  const takeImage = async () =>{
+    const image = await ImageCropPicker.openCamera({
       width: 300,
       height: 300,
       cropping: true,
-    }).then(image => {
-      console.log(image.path)
-      setSaveImage(image.path)
-    })
+    })    
+    
+    setSaveImage(image.path);
+
+     await this.toServer({
+      base64: true,
+      uri: saveImage,
+    });
   }
 
-  return (
-    <View style={styles.container}>
-      <Button title='Take Image' onPress={() => {takeImage()}}/>
-      <Image source={{ uri: saveImage }} style={{ width: 300, height: 300 }} />
-      <StatusBar style="auto" />
-    </View>
-  );
+
+  toServer = async (mediaFile) => {
+    ((route = "/image"), (content_type = "image/jpeg"))
+    url = 'http://192.168.1.234:5000/image';
+    let response = await FS.uploadAsync(url, mediaFile.uri, {
+      headers: {
+        "content-type": content_type,
+      },
+      httpMethod: "POST",
+      uploadType: FS.FileSystemUploadType.BINARY_CONTENT,
+    });
+    
+    console.log("Ping!")
+    console.log(response.headers);
+    console.log(response.body);
+  };
+
+    return (
+      <SafeAreaView style={styles.container}>
+          <Button
+            title="Pick From Gallery"
+            onPress={async () => {
+              takeImage();
+            }}
+          />
+      </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
