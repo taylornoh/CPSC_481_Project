@@ -41,4 +41,7 @@ def image():
         file_path = imageNaming()
         with open(file_path, 'wb') as out:
             out.write(bytesOfImage)
+
+        if(checkFullImage()):
+            return "All images Read"
         return "Image read"

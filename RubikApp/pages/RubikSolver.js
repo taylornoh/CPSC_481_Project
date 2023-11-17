@@ -20,6 +20,9 @@ export default PastAttempt = () => {
   const [saveImageRight, setSaveImageRight] = React.useState('Right');
   const [saveImageBottom, setSaveImageBottom] = React.useState('Bottom');
 
+  const [imageValues, setImageValues] = React.useState();
+
+
   const [uploadPossible, setUploadPossible] = React.useState(true);
 
 
@@ -58,10 +61,13 @@ export default PastAttempt = () => {
       uri: saveImageLeft,
     });
 
-    await this.toServer({
+    let result = await this.toServer({
       base64: true,
       uri: saveImageRight,
     });
+
+    console.log("----------------")
+    console.log(imageValues)
   };
 
 
@@ -95,9 +101,10 @@ export default PastAttempt = () => {
       uploadType: FS.FileSystemUploadType.BINARY_CONTENT,
     });
 
-    console.log('Ping!');
     console.log(response.headers);
     console.log(response.body);
+
+    setImageValues(response.body)
   };
 
   const checkImageIsValid = (val) => {
