@@ -12,6 +12,9 @@ import {
 import ImageCropPicker from 'react-native-image-crop-picker';
 import * as React from 'react';
 import * as FS from "expo-file-system";
+
+import RubikStyle from '../styles/RubikStyle';
+
 export default PastAttempt = () => {
   const [saveImageFront, setSaveImageFront] = React.useState('Front');
   const [saveImageTop, setSaveImageTop] = React.useState('Top');
@@ -66,8 +69,6 @@ export default PastAttempt = () => {
       uri: saveImageRight,
     });
 
-    console.log("----------------")
-    console.log(imageValues)
   };
 
 
@@ -89,6 +90,9 @@ export default PastAttempt = () => {
     }
   }, [saveImageFront, saveImageTop, saveImageBack, saveImageLeft, saveImageRight, saveImageBottom]);
 
+  React.useEffect(()=> {
+    console.log(imageValues)
+  }, [imageValues])
 
   toServer = async mediaFile => {
     (route = '/image'), (content_type = 'image/jpeg');
@@ -111,6 +115,25 @@ export default PastAttempt = () => {
     return val.length > 10;
   };
 
+  const GridFace = () =>{
+    return(
+      <View style={gameStyles.gameLettersLayoutY}>
+
+      <View style={gameStyles.gameLetters}>
+
+      </View>
+      <View style={gameStyles.gameLetters}>
+
+      </View>
+
+      <View style={gameStyles.gameLetters}>
+
+      </View>
+
+    </View>
+    )
+
+  }
 
   return (
     <View style={styles.container}>
