@@ -5,8 +5,12 @@ from flask_cors import CORS, cross_origin
 import os
 import sys
 import json
-from rubik.cube import Cube
-from rubik.solve import Solver
+from cube import RubiksCube
+from solver import IDA_star, build_heuristic_db
+
+MAX_MOVES = 5
+NEW_HEURISTICS = False
+HEURISTIC_FILE = 'heuristic.json'
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -50,77 +54,70 @@ def image():
         return "Image read"
 
 
-def fetch_cube_state_as_str(json_orientation):
-    string_orientation = ""
-    other_faces = ["Left", "Front", "Right", "Back"]
+
+def construct_cube_state_str(cube_state_dict):
+    faces = ["Top", "Left", "Front", "Right", "Back", "Bottom"]
+    cube_state_str = ""
+
+    # Iterating through the faces in the standard Rubix cube layout order
+    for face in faces:
+        if face == "Top":
+            face = "Up"
+        elif face == "Bottom":
+            face = "Down"
+        # Grabbing the first letter from each square and inserting it into the string
+        for square in cube_state_dict[face]:
+            cube_state_str += square[0]
     
-    start_index = 0
-    end_index = 3
+    return cube_state_str
 
-    for square in json_orientation["data"]["Up"]:
-        string_orientation += square[0].upper()
-
-    while (end_index <= 9):
-        for face in other_faces:
-            color_set = json_orientation["data"][face][start_index:end_index]
-            for color in color_set:
-                string_orientation += color[0].upper()
-        
-        start_index += 3
-        end_index += 3
-    
-    for square in json_orientation["data"]["Down"]:
-        string_orientation += square[0].upper()
-
-    return string_orientation
-
-def convert_solver_moves(solver_moves):
-    legend = {
-        "U": "Turn the upper face clockwise (90 degrees)",
-        "Ui": "Turn the upper face counterclockwise (90 degrees)",
-        "B": "Turn the back face clockwise (90 degrees)",
-        "Bi": "Turnthe back face counterclockwise (90 degrees)",
-        "E": "Turn the Equatorial slice clockwise (90 degrees)",
-        "Ei": "Turn the Equatorial slice counterclockwise (90 degrees)",
-        "L": "Turn the Left face clockwise (90 degrees)",
-        "Li": "Turn the Left face counterclockwise (90 degrees)",
-        "R": "Turn the Right face clockwise (90 degrees)",
-        "Ri": "Turn the Right face counterclockwise (90 degrees)",
-        "D": "Turn the Down face clockwise (90 degrees)",
-        "Di": "Turn the Down face counterclockwise (90 degrees)",
-        "F": "Turn the Front face clockwise (90 degrees)",
-        "Fi": "Turn the Front face counterclockwise (90 degrees)",
-        "S": "Turn the middle vertical slice clockwise (90 degrees)",
-        "Si": "Turn the middle vertical slice counterclockwise (90 degrees)",
-        "X": "Rotate the entire cube around the X-axis clockwise (viewed from the front)",
-        "Xi": "Rotate the entire cube around the X-axis counterclockwise (viewed from the front)",
-        "Z": "Rotate the entire cube around the Z-axis clockwise (viewed from the front)",
-        "Zi": "Rotate the entire cube around the Z-axis counterclockwise (viewed from the front)"
-    }
-
-    converted_moves = []
-
-    for move in solver_moves:
-        converted_moves.append(legend[move])
-    
-    return converted_moves
 
 @app.route("/steps", methods=['GET', 'POST'])
 def steps():
     if request.method == "POST":
-        json_orientation = request.json["data"]
-        string_orientation = fetch_cube_state_as_str(json_orientation)
+        with open("test.json", "r") as json_cube:
+            cube_state_dict = json.load(json_cube)
+            cube_state_str = construct_cube_state_str(cube_state_dict)
 
-        cube = Cube(string_orientation)
-        solver = Solver(cube)
-        solver.solve()
+            cube = RubiksCube(state=cube_state_str)
+            cube.show()
 
-        raw_moves = solver.moves
-        converted_moves = convert_solver_moves(raw_moves)
+            if os.path.exists(HEURISTIC_FILE):
+                with open(HEURISTIC_FILE) as f:
+                    h_db = json.load(f)
+            else:
+                h_db = None
 
-        steps = {
-            "raw_moves": raw_moves,
-            "converted_moves": converted_moves
-        }
+            if h_db is None or NEW_HEURISTICS is True:
+                actions = [(r, n, d) for r in ['h', 'v', 's'] for d in [0, 1] for n in range(cube.n)]
+                h_db = build_heuristic_db(
+                    cube.stringify(),
+                    actions,
+                    max_moves = MAX_MOVES,
+                    heuristic = h_db
+                )
 
-        return jsonify(steps)
+                with open(HEURISTIC_FILE, 'w', encoding='utf-8') as f:
+                    json.dump(
+                        h_db,
+                        f,
+                        ensure_ascii=False,
+                        indent=4
+                    )
+            
+            cube.shuffle(l_rot = MAX_MOVES if MAX_MOVES < 5 else 5, u_rot = MAX_MOVES)
+            #--------------------------------
+            solver = IDA_star(h_db)
+            moves = solver.run(cube.stringify())
+            print(moves)
+
+            for m in moves:
+                if m[0] == 'h':
+                    cube.horizontal_twist(m[1], m[2])
+                elif m[0] == 'v':
+                    cube.vertical_twist(m[1], m[2])
+                elif m[0] == 's':
+                    cube.side_twist(m[1], m[2])
+            cube.show()
+
+            return moves
